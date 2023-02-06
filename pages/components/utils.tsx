@@ -13,12 +13,13 @@ export function Render (x: number[], y: number[]): JSX.Element[] {
   // on x and y
   for (let i = 0; i < 50; i++) {
     let n = 1; // track the state of the if statment bellow, we don't want to push the same element twise
+    let buffer = [...squirsx]
     for (let j = 0; j < y.length; j++) {
       if (y[j] == i) {
+        console.log("loop count", j)
         console.log(x[j], i)
-        let buffer = [...squirsx]
         buffer[x[j]] = <div className="cordx check"></div>
-        final.push(<div className="cordy">{buffer}</div>)
+        final[i] = <div className="cordy">{buffer}</div>
         n = 0; // we don't what to push twise
       }
     }
