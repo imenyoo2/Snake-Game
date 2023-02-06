@@ -28,27 +28,26 @@ export function Render (x: number[], y: number[]): JSX.Element[] {
   return final
 }
 
-// Move return an array [[x], [y]] after apply dir
-export function Move(x: number, y:number, dir: string): [number[],number[]] {
-  let resultx: number[] = []
-  let resulty: number[] = []
+// Move return an array [x, y] after apply dir
+export function Move(x: number, y:number, dir: string): number[] {
+  let result: number[] = []
   switch(dir) {
     case "up":
-      resultx.push(x)
-      resulty.push(y - 1) // here because the way the squires rendered is reversed
+      result.push(x)
+      result.push(y - 1) // here because the way the squires rendered is reversed
       break
     case "down":
-      resultx.push(x)
-      resulty.push(y + 1) // same reason as up
+      result.push(x)
+      result.push(y + 1) // same reason as up
       break
     case "right":
-      resultx.push(x + 1)
-      resulty.push(y)
+      result.push(x + 1)
+      result.push(y)
       break
     case "left":
-      resultx.push(x - 1)
-      resulty.push(y)
+      result.push(x - 1)
+      result.push(y)
       break
   }
-  return [resultx, resulty]
+  return result
 }
