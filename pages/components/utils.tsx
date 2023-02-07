@@ -1,30 +1,28 @@
-type direction = "up" | "down" | "right" | "left"
+export type direction = "up" | "down" | "right" | "left"
 
 // render return the whole board with spots highlighted based on x and y
 export function Render (x: number[], y: number[]): JSX.Element[] {
-  let squirsx: JSX.Element[] = []; // array of the x's of eatch y
+  let divx: JSX.Element[] = []; // array of the x's of eatch y
   let final: JSX.Element[] = [];
-  // initiate squirsx
+  // initiate divx
   for (let i = 0; i < 50; i++) {
-    squirsx.push(<div className="cordx"></div>)
+    divx.push(<div className="cordx"></div>)
   }
-  // now we start pushing squirsx inside each y dev
-  // we also modify the classNames of each squirsx element based
+  // now we start pushing divx inside each y dev
+  // we also modify the classNames of each divx element based
   // on x and y
   for (let i = 0; i < 50; i++) {
     let n = 1; // track the state of the if statment bellow, we don't want to push the same element twise
-    let buffer = [...squirsx]
+    let buffer = [...divx]
     for (let j = 0; j < y.length; j++) {
       if (y[j] == i) {
-        console.log("loop count", j)
-        console.log(x[j], i)
         buffer[x[j]] = <div className="cordx check"></div>
         final[i] = <div className="cordy">{buffer}</div>
         n = 0; // we don't what to push twise
       }
     }
     if (n) {
-      final.push(<div className="cordy check">{squirsx}</div>)
+      final.push(<div className="cordy check">{divx}</div>)
     }
   }
   return final
@@ -56,43 +54,44 @@ export function Move(point: number[], dir: direction): number[] {
 
 // RelativeMove move relative based on the target movement
 // used to move the rest of worm body
-export function RelativeMove (relative: number[], target: number[], dir: direction): number[] {
+export function RelativeMove (relative: number[], target: number[], dir: direction): [number[], direction] {
   switch (dir) {
     case "up":
     case "down":
       // test if target and relative align vertically
       if (relative[0] == target[0]) {
-        return Move(target, dir)
+        return [Move(target, dir), dir]
       // test if relative is at the right of target
       // TODO change the comment above after testing
       } else if (relative[0] > target[0]) {
-        return Move(target, "right")
+        return [Move(target, "right"), "right"]
       } else {
-        return Move(target, "left")
+        return [Move(target, "left"), "left"]
       }
     case "left":
     case "right":
       if (relative[1] == target[1]) {
-        return Move(target, dir)
+        return [Move(target, dir), dir]
       } else if (relative[1] > target[1]) {
-        return Move(target, "down")
+        return [Move(target, "down"), "down"]
       } else {
-        return Move(target, "up")
+        return [Move(target, "up"), "up"]
       }
   }
 }
 
 // x and y have the same length
 export function MoveGroup(x: number[], y: number[], dir: direction): [number[], number[]] {
-  console.log("starting MoveGroup function")
   let result: [number[], number[]] = [[], []]
   let headPoint = [x[0], y[0]]
   const movedHeadPoint = Move(headPoint, dir)
   result[0].push(movedHeadPoint[0])
   result[1].push(movedHeadPoint[1])
+  let newdir = dir
 
   for (let i = 1; i < x.length; i++) {
-    const movedPoint: number[] = RelativeMove([x[i - 1], y[i - 1]], [x[i], y[i]], dir)
+    let movedPoint: number[]
+    [movedPoint, newdir] = RelativeMove([x[i - 1], y[i - 1]], [x[i], y[i]], newdir)
     result[0].push(movedPoint[0])
     result[1].push(movedPoint[1])
   }
