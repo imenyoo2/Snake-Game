@@ -97,3 +97,4 @@ export function MoveGroup(x: number[], y: number[], dir: direction): [number[], 
   }
   return result
 }
+

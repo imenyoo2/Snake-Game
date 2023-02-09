@@ -1,7 +1,9 @@
 
-body {
+.app {
   display: flex;
-  justify-content: center;
+  flex-direction: row;
+  align-items: center;
+  gap: 10px;
 }
 #container {
   width: 549px;
@@ -24,4 +26,10 @@ body {
 }
 .check {
   background: black;
+}
+
+.controler {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
