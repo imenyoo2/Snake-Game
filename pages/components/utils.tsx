@@ -25,7 +25,7 @@ export function Move(point: number[], dir: direction): number[] {
 }
 
 // RelativeMove move relative based on the target movement
-// used to move the rest of worm body
+// used to move the rest of snake body
 export function RelativeMove(
   relative: number[],
   target: number[],
@@ -83,15 +83,15 @@ export function MoveGroup(
   return result;
 }
 
-// renderWormState return an array of the warm parts with thier
+// renderSnakeState return an array of the warm parts with thier
 // coordinates configured
-export function renderWormState(x: number[], y: number[]): JSX.Element[] {
+export function renderSnakeState(x: number[], y: number[]): JSX.Element[] {
   let result: JSX.Element[] = [];
   for (let i = 0; i < x.length; i++) {
     result.push(
       <div
         key={i}
-        className="WormPart"
+        className="SnakePart"
         style={{ left: x[i] * 10, top: y[i] * 10 }}
       ></div>
     );
