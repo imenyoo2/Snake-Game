@@ -1,32 +1,5 @@
 export type direction = "up" | "down" | "right" | "left";
 
-// render return the whole board with spots highlighted based on x and y
-export function Render(x: number[], y: number[]): JSX.Element[] {
-  let divx: JSX.Element[] = []; // array of the x's of eatch y
-  let final: JSX.Element[] = [];
-  // initiate divx
-  for (let i = 0; i < 50; i++) {
-    divx.push(<div className="cordx"></div>);
-  }
-  // now we start pushing divx inside each y dev
-  // we also modify the classNames of each divx element based
-  // on x and y
-  for (let i = 0; i < 50; i++) {
-    let n = 1; // track the state of the if statment bellow, we don't want to push the same element twise
-    let buffer = [...divx];
-    for (let j = 0; j < y.length; j++) {
-      if (y[j] == i) {
-        buffer[x[j]] = <div className="cordx check"></div>;
-        final[i] = <div className="cordy">{buffer}</div>;
-        n = 0; // we don't what to push twise
-      }
-    }
-    if (n) {
-      final.push(<div className="cordy check">{divx}</div>);
-    }
-  }
-  return final;
-}
 
 // Move return an array [x, y] after apply dir
 export function Move(point: number[], dir: direction): number[] {
@@ -108,4 +81,16 @@ export function MoveGroup(
     result[1].push(movedPoint[1]);
   }
   return result;
+}
+
+// renderWormState return an array of the warm parts with thier 
+// coordinates configured
+export function renderWormState(x: number[], y: number[]): JSX.Element[] {
+  let result: JSX.Element[] = [];
+  for (let i = 0; i < x.length; i++) {
+    result.push(
+      <div className="WormPart" style={{ left: x[i]*10, top: y[i]*10 }}></div>
+    );
+  }
+  return result
 }

@@ -12,7 +12,8 @@
   display: flex;
   flex-direction: column;
   gap: 1px;
-  background: black;
+  background: white;
+  position: relative;
 }
 .cordx {
   background: white;
@@ -24,7 +25,11 @@
   display: flex;
   gap: 1px;
 }
-.check {
+
+.WormPart {
+  position: absolute;
+  width: 11px;
+  height: 11px;
   background: black;
 }
 
