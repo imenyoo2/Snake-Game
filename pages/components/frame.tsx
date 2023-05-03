@@ -6,31 +6,33 @@ import { useState, useEffect } from "react";
 // finished lol
 export default function Frame() {
   // the state of the worm
-  const [wormState, setWormState] = useState<[number[], number[]]>([
+  const [wormState, setWormState] = useState<[number[], number[], direction]>([
     [1, 1, 2],
     [1, 2, 2],
+    "down",
   ]);
-  const [currentDir, setCurrentDir] = useState<direction>("down");
+  console.log(wormState);
+  //const [currentDir, setCurrentDir] = useState<direction>("down");
+  const [isMoving, setIsMoving] = useState<boolean>(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
-  const [isMoving, setIsMoving] = useState<number>(0);
-  console.log(...MoveGroup([4, 5, 5], [5, 5, 4], "up"));
-  let wormparts = renderWormState(...wormState);
+  // console.log(...MoveGroup([4, 5, 5], [5, 5, 4], "up"));
+  let wormparts = renderWormState(wormState[0], wormState[1]);
 
   // change the currentdir of the worm to dir
   const moveWormState = (dir: direction) => {
-    setCurrentDir(dir);
+    setWormState((currentValue) => [currentValue[0], currentValue[1], dir]);
   };
 
   // implementing constant movement of the worm, by setting a function
   // that get called every 200 ms and wormState according to currentDir
   useEffect(() => {
     if (isMoving) {
-      const id = setInterval(() => {
-          setWormState(MoveGroup(...wormState, currentDir));
-        }, 200);
-      setIntervalId(id);
-      console.log("intervalId have changed: ", intervalId);
-    } else {
+    const id = setInterval(() => {
+      setWormState((currentValue) => [...MoveGroup(...currentValue), currentValue[2]]);
+    }, 200);
+    setIntervalId(id);
+    }
+    else {
       clearInterval(intervalId);
     }
   }, [isMoving]);
@@ -42,7 +44,7 @@ export default function Frame() {
         <div className="controler">
           <button
             type="button"
-            disabled={currentDir == "down"}
+            disabled={wormState[2] == "down"}
             onClick={() => moveWormState("up")}
           >
             up
@@ -50,14 +52,14 @@ export default function Frame() {
           <div className="rightLeft">
             <button
               type="button"
-              disabled={currentDir == "right"}
+              disabled={wormState[2] == "right"}
               onClick={() => moveWormState("left")}
             >
               left
             </button>
             <button
               type="button"
-              disabled={currentDir == "left"}
+              disabled={wormState[2] == "left"}
               onClick={() => moveWormState("right")}
             >
               right
@@ -65,16 +67,16 @@ export default function Frame() {
           </div>
           <button
             type="button"
-            disabled={currentDir == "up"}
+            disabled={wormState[2] == "up"}
             onClick={() => moveWormState("down")}
           >
             down
           </button>
         </div>
-        <button type="button" onClick={() => setIsMoving(0)}>
+        <button type="button" onClick={() => setIsMoving(false)}>
           stop
         </button>
-        <button type="button" onClick={() => setIsMoving(1)}>
+        <button type="button" onClick={() => setIsMoving(true)}>
           start
         </button>
       </div>

@@ -62,6 +62,7 @@ export function MoveGroup(
   y: number[],
   dir: direction
 ): [number[], number[]] {
+  console.log("MoveGroup run...")
   let result: [number[], number[]] = [[], []];
   let headPoint = [x[0], y[0]];
   const movedHeadPoint = Move(headPoint, dir);
@@ -89,6 +90,7 @@ export function renderWormState(x: number[], y: number[]): JSX.Element[] {
   for (let i = 0; i < x.length; i++) {
     result.push(
       <div
+        key={i}
         className="WormPart"
         style={{ left: x[i] * 10, top: y[i] * 10 }}
       ></div>
