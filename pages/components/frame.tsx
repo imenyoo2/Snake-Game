@@ -1,5 +1,6 @@
 import { MoveGroup, direction, renderSnakeState, checkEdge } from "./utils";
 import { useState, useEffect } from "react";
+import LostWindow from "./LostWindow"
 
 // Frame is basically the whole app Component, i probably should've
 // made it into different components but i didn't notice until i
@@ -15,8 +16,9 @@ export default function Frame() {
   //const [currentDir, setCurrentDir] = useState<direction>("down");
   const [isMoving, setIsMoving] = useState<boolean>(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
+  const [isLost, setIsLost] = useState<boolean>(false);
   // console.log(...MoveGroup([4, 5, 5], [5, 5, 4], "up"));
-  checkEdge(snakeState[0][0], snakeState[1][0], setIsMoving, isMoving);
+  checkEdge(snakeState[0][0], snakeState[1][0], setIsMoving, setIsLost, isMoving);
 
   let snakeparts = renderSnakeState(snakeState[0], snakeState[1]);
 
@@ -42,7 +44,9 @@ export default function Frame() {
   return (
     <>
       <div className="app">
-        <div id="container">{snakeparts}</div>
+        <div id="container">
+        {isLost ? <LostWindow/> : snakeparts}
+        </div>
         <div className="controler">
           <button
             type="button"
