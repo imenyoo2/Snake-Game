@@ -1,6 +1,5 @@
 export type direction = "up" | "down" | "right" | "left";
 
-
 // Move return an array [x, y] after apply dir
 export function Move(point: number[], dir: direction): number[] {
   let result = [];
@@ -83,14 +82,17 @@ export function MoveGroup(
   return result;
 }
 
-// renderWormState return an array of the warm parts with thier 
+// renderWormState return an array of the warm parts with thier
 // coordinates configured
 export function renderWormState(x: number[], y: number[]): JSX.Element[] {
   let result: JSX.Element[] = [];
   for (let i = 0; i < x.length; i++) {
     result.push(
-      <div className="WormPart" style={{ left: x[i]*10, top: y[i]*10 }}></div>
+      <div
+        className="WormPart"
+        style={{ left: x[i] * 10, top: y[i] * 10 }}
+      ></div>
     );
   }
-  return result
+  return result;
 }

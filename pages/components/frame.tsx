@@ -11,6 +11,8 @@ export default function Frame() {
     [1, 2, 2],
   ]);
   const [currentDir, setCurrentDir] = useState<direction>("down");
+  const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
+  const [isMoving, setIsMoving] = useState<number>(0);
   console.log(...MoveGroup([4, 5, 5], [5, 5, 4], "up"));
   let wormparts = renderWormState(...wormState);
 
@@ -22,13 +24,16 @@ export default function Frame() {
   // implementing constant movement of the worm, by setting a function
   // that get called every 200 ms and wormState according to currentDir
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      setWormState(MoveGroup(...wormState, currentDir));
-    }, 200);
-    return () => {
+    if (isMoving) {
+      const id = setInterval(() => {
+          setWormState(MoveGroup(...wormState, currentDir));
+        }, 200);
+      setIntervalId(id);
+      console.log("intervalId have changed: ", intervalId);
+    } else {
       clearInterval(intervalId);
-    };
-  });
+    }
+  }, [isMoving]);
 
   return (
     <>
@@ -66,6 +71,12 @@ export default function Frame() {
             down
           </button>
         </div>
+        <button type="button" onClick={() => setIsMoving(0)}>
+          stop
+        </button>
+        <button type="button" onClick={() => setIsMoving(1)}>
+          start
+        </button>
       </div>
     </>
   );
