@@ -1,8 +1,8 @@
 import { MoveGroup, direction, renderWormState } from "./utils";
 import { useState, useEffect } from "react";
 
-// Frame is basically the whole app Component, i probably should've 
-// made it into different components but i didn't notice until i 
+// Frame is basically the whole app Component, i probably should've
+// made it into different components but i didn't notice until i
 // finished lol
 export default function Frame() {
   // the state of the worm
@@ -12,7 +12,7 @@ export default function Frame() {
   ]);
   const [currentDir, setCurrentDir] = useState<direction>("down");
   console.log(...MoveGroup([4, 5, 5], [5, 5, 4], "up"));
-  let wormparts = renderWormState(...wormState)
+  let wormparts = renderWormState(...wormState);
 
   // change the currentdir of the worm to dir
   const moveWormState = (dir: direction) => {
@@ -21,21 +21,19 @@ export default function Frame() {
 
   // implementing constant movement of the worm, by setting a function
   // that get called every 200 ms and wormState according to currentDir
- useEffect(() => {
+  useEffect(() => {
     const intervalId = setInterval(() => {
       setWormState(MoveGroup(...wormState, currentDir));
     }, 200);
     return () => {
       clearInterval(intervalId);
     };
-  }, [wormState]);
+  });
 
   return (
     <>
       <div className="app">
-        <div id="container">
-          {wormparts}
-        </div>
+        <div id="container">{wormparts}</div>
         <div className="controler">
           <button
             type="button"
@@ -72,4 +70,3 @@ export default function Frame() {
     </>
   );
 }
-
