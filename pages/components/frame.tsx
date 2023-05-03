@@ -8,8 +8,8 @@ import LostWindow from "./LostWindow"
 export default function Frame() {
   // the state of the snake
   const [snakeState, setSnakeState] = useState<[number[], number[], direction]>([
-    [1, 1, 2],
-    [1, 2, 2],
+    [1, 1, 2, 30],
+    [1, 2, 2, 35],
     "down",
   ]);
   console.log(snakeState);

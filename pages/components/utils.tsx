@@ -1,3 +1,5 @@
+
+
 export type direction = "up" | "down" | "right" | "left";
 
 // Move return an array [x, y] after apply dir
@@ -64,13 +66,15 @@ export function MoveGroup(
 ): [number[], number[]] {
   console.log("MoveGroup run...")
   let result: [number[], number[]] = [[], []];
+  // handling head point
   let headPoint = [x[0], y[0]];
   const movedHeadPoint = Move(headPoint, dir);
   result[0].push(movedHeadPoint[0]);
   result[1].push(movedHeadPoint[1]);
   let newdir = dir;
 
-  for (let i = 1; i < x.length; i++) {
+  // execlude the last point cuz it's the coord of food
+  for (let i = 1; i < x.length - 1; i++) {
     let movedPoint: number[];
     [movedPoint, newdir] = RelativeMove(
       [x[i - 1], y[i - 1]],
@@ -79,6 +83,20 @@ export function MoveGroup(
     );
     result[0].push(movedPoint[0]);
     result[1].push(movedPoint[1]);
+  }
+  // checking if snake eat food
+  if (result[0][0] == x[x.length - 1] && result[1][0] == y[y.length - 1]) {
+    console.log("handling eating....")
+    console.log(x, y);
+    console.log(result);
+    result[0].push(x[x.length - 2]);
+    result[1].push(y[y.length - 2]);
+    // adding a new food
+    result[0].push(random(0, 55));
+    result[1].push(random(0, 55));
+  } else {
+    result[0].push(x[x.length - 1]);
+    result[1].push(y[y.length - 1]);
   }
   return result;
 }
@@ -109,4 +127,7 @@ export function checkEdge(x: number, y:number, action1:any, action2:any, isMovin
     action1(false);
     action2(true);
   }
+}
+function random(min: number, max:number){
+  return Math.floor(Math.random() * (max - min)) + min
 }

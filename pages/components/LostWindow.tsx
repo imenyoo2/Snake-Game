@@ -3,7 +3,7 @@
 export default function LostWindow() {
   return (
     <div className="LostWindow">
-      <h1>You Lost</h1>
+      <h1>Game Over</h1>
     </div>
   )
 }
