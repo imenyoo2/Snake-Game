@@ -1,4 +1,4 @@
-import { MoveGroup, direction, renderSnakeState } from "./utils";
+import { MoveGroup, direction, renderSnakeState, checkEdge } from "./utils";
 import { useState, useEffect } from "react";
 
 // Frame is basically the whole app Component, i probably should've
@@ -16,6 +16,8 @@ export default function Frame() {
   const [isMoving, setIsMoving] = useState<boolean>(false);
   const [intervalId, setIntervalId] = useState<NodeJS.Timer>();
   // console.log(...MoveGroup([4, 5, 5], [5, 5, 4], "up"));
+  checkEdge(snakeState[0][0], snakeState[1][0], setIsMoving, isMoving);
+
   let snakeparts = renderSnakeState(snakeState[0], snakeState[1]);
 
   // change the currentdir of the snake to dir

@@ -98,3 +98,13 @@ export function renderSnakeState(x: number[], y: number[]): JSX.Element[] {
   }
   return result;
 }
+
+export function checkEdge(x: number, y:number, action:any, isMoving:boolean) {
+  console.log(`x = ${x}, y = ${y}`)
+  if (isMoving && (x == -1 || x == 55)) {
+    action(false);
+  }
+  if (isMoving && (y == 55 || y == -1)) {
+    action(false);
+  }
+}
