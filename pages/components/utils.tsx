@@ -1,5 +1,3 @@
-
-
 export type direction = "up" | "down" | "right" | "left";
 
 // Move return an array [x, y] after apply dir
@@ -64,7 +62,7 @@ export function MoveGroup(
   y: number[],
   dir: direction
 ): [number[], number[]] {
-  console.log("MoveGroup run...")
+  //console.log("MoveGroup run...");
   let result: [number[], number[]] = [[], []];
   // handling head point
   let headPoint = [x[0], y[0]];
@@ -86,9 +84,9 @@ export function MoveGroup(
   }
   // checking if snake eat food
   if (result[0][0] == x[x.length - 1] && result[1][0] == y[y.length - 1]) {
-    console.log("handling eating....")
-    console.log(x, y);
-    console.log(result);
+    //console.log("handling eating....");
+    //console.log(x, y);
+    //console.log(result);
     result[0].push(x[x.length - 2]);
     result[1].push(y[y.length - 2]);
     // adding a new food
@@ -117,8 +115,14 @@ export function renderSnakeState(x: number[], y: number[]): JSX.Element[] {
   return result;
 }
 
-export function checkEdge(x: number, y:number, action1:any, action2:any, isMoving:boolean) {
-  console.log(`x = ${x}, y = ${y}`)
+export function checkEdge(
+  x: number,
+  y: number,
+  action1: any,
+  action2: any,
+  isMoving: boolean
+) {
+  //console.log(`x = ${x}, y = ${y}`);
   if (isMoving && (x == -1 || x == 55)) {
     action1(false);
     action2(true);
@@ -128,6 +132,29 @@ export function checkEdge(x: number, y:number, action1:any, action2:any, isMovin
     action2(true);
   }
 }
-function random(min: number, max:number){
-  return Math.floor(Math.random() * (max - min)) + min
+
+// checkBody checks if any of SnakeState coordinates is equal
+// to the head coordinates, exept for the head of food
+export function checkBody(
+  SnakeState: [number[], number[]],
+  action1: any,
+  action2: any,
+  isMoving: boolean
+) {
+  let lastIndex = SnakeState[0].length - 1;
+
+  if (!isMoving) {
+    return;
+  }
+  for (let i = 1; i < lastIndex; i++) {
+    if (SnakeState[0][i] == SnakeState[0][0] && SnakeState[1][i] == SnakeState[1][0]) {
+      action1(false);
+      action2(true);
+      return;
+    }
+  }
+}
+
+function random(min: number, max: number) {
+  return Math.floor(Math.random() * (max - min)) + min;
 }
