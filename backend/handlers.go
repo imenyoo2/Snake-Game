@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+  "encoding/json"
 )
 
 func (app *application) home(w http.ResponseWriter, r *http.Request) {
@@ -13,9 +14,12 @@ func (app *application) home(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) sync(w http.ResponseWriter, r *http.Request) {
+  fmt.Println("got a request to sync");
   if r.Method == "GET" {
+    fmt.Println("GET sync");
     app.syncGET(w, r);
   } else if r.Method == "POST" {
+    fmt.Println("POST sync");
     app.syncPOST(w, r);
   } else {
     w.Write([]byte("Wrong HTTP method"))
@@ -23,15 +27,49 @@ func (app *application) sync(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) syncGET(w http.ResponseWriter, r *http.Request) {
-  var dir int
+  var dir string
   token := strings.Replace(r.URL.Path, "/sync/", "", 1)
-  row := app.DB.QueryRow("SELECT direction FROM sessions WHERE token = ?", token)
+  row := app.DB.QueryRow("SELECT move FROM sessions WHERE token = ?", token)
   row.Scan(&dir)
 
+  w.Header().Set("Content-Type", "application/json")
+  w.Write([]byte(fmt.Sprintf("{\"dir\": \"%s\"}", dir)));
 }
 
+type syncData struct {
+  Token   int         `json:"token"`
+  Move    string      `json:"move"`
+  Peered    int       `json:"peered"`
+}
+
+type returnedData struct {
+  Move    string      `json:"dir"`
+}
 func (app *application) syncPOST(w http.ResponseWriter, r *http.Request) {
-  // TODO
+  fmt.Println("syncPOST");
+  var data syncData
+  var rawdata []byte
+  var peerMove string
+  updateStmt := `UPDATE sessions SET move = ? WHERE token = ?`
+  qeuryStmt := `SELECT move FROM sessions WHERE peered = ?`
+  buffer := make([]byte, 100)
+  n, err := r.Body.Read(buffer);
+  for  n > 0 {
+    rawdata = append(rawdata, buffer[:n]...)
+    n, err = r.Body.Read(buffer);
+  }
+  err = json.Unmarshal(rawdata, &data);
+  check(err);
+  app.DB.Exec(updateStmt, data.Move, data.Token);
+  err = app.DB.QueryRow(qeuryStmt, data.Peered).Scan(&peerMove);
+  check(err);
+
+  // successful sync
+  returnData, err := json.Marshal(returnedData{Move: peerMove});
+  check(err);
+  w.WriteHeader(http.StatusOK)
+  w.Header().Set("Content-Type", "application/json")
+  w.Write(returnData);
 }
 
 // generate generate a random token, insert it into the db
@@ -74,9 +112,6 @@ func (app *application) peer(w http.ResponseWriter, r *http.Request) {
       fmt.Println(err);
       w.Write([]byte("internal server error"));
     }
-    w.WriteHeader(http.StatusOK);
-    w.Write([]byte("found a peer"));
-
   } else {
     fmt.Printf("%s: already a peer is waiting for me\n", token);
     _, err := app.DB.Exec("UPDATE sessions SET peered = ? WHERE peered = 0 and token != ?", token, token);
@@ -85,4 +120,5 @@ func (app *application) peer(w http.ResponseWriter, r *http.Request) {
     }
     app.toWait = true;
   }
+  http.Redirect(w, r, fmt.Sprintf("/sync/%s", token), http.StatusSeeOther);
 }
