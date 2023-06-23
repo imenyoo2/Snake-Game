@@ -55,15 +55,21 @@ export default function Frame() {
     });
   };
 
+  let fetchAndMove = async () => {
+    await fetch("http://127.0.0.1:4000/sync/928457", {method: "GET"})
+      .then((res) => res.json())
+      .then((data) => {console.log(data)})
+    setSnakeState((currentValue) => [
+        ...MoveGroup(...currentValue),
+        currentValue[2],
+    ]);
+  }
   // implementing constant movement of the snake, by setting a function
   // that get called every 200 ms and snakeState according to currentDir
   useEffect(() => {
     if (isMoving) {
       const id = setInterval(() => {
-        setSnakeState((currentValue) => [
-          ...MoveGroup(...currentValue),
-          currentValue[2],
-        ]);
+        fetchAndMove();
       }, 100);
       setIntervalId(id);
     } else {

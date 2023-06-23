@@ -29,10 +29,12 @@ func (app *application) sync(w http.ResponseWriter, r *http.Request) {
 func (app *application) syncGET(w http.ResponseWriter, r *http.Request) {
   var dir string
   token := strings.Replace(r.URL.Path, "/sync/", "", 1)
+  fmt.Printf("GET request from %s\n", token);
   row := app.DB.QueryRow("SELECT move FROM sessions WHERE token = ?", token)
   row.Scan(&dir)
 
   w.Header().Set("Content-Type", "application/json")
+  w.Header().Set("Access-Control-Allow-Origin", "*")
   w.Write([]byte(fmt.Sprintf("{\"dir\": \"%s\"}", dir)));
 }
 
